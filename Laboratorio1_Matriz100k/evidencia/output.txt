@@ -1,13 +1,29 @@
-Shape lógico: (100000, 100000)
-Tamaño real en disco (bytes): 1250000000
-Muestra 10x10 (desempaquetada):
-[[1 0 1 0 0 0 0 1 0 0]
- [0 1 0 1 0 0 1 1 1 0]
- [0 0 0 0 1 0 0 0 0 0]
- [1 1 1 1 1 0 1 1 1 0]
- [1 0 1 1 1 0 0 1 1 1]
- [0 1 0 0 0 1 1 1 1 0]
- [0 0 0 1 1 0 0 1 0 0]
- [1 0 1 1 0 0 1 1 0 1]
- [0 0 1 0 1 0 0 1 1 0]
- [0 0 0 1 0 1 1 0 1 0]]
+=== Verificación de tamaño ===
+Tamaño esperado: 1250000000 bytes (1.25 GB)
+Tamaño real:     1250000000 bytes (1.25 GB)
+Coincide: True
+
+=== Muestra de contenido en distintas zonas del archivo ===
+--- Inicio (filas 0-4) ---
+[[1 0 0 0 0 1 1 1 0 0]
+ [1 1 0 0 0 1 1 1 0 1]
+ [1 0 1 0 1 1 1 0 0 1]
+ [0 0 0 0 1 0 1 0 1 1]
+ [0 0 0 0 0 0 1 0 1 1]]
+
+--- Medio (filas 50000-50004) ---
+[[1 1 0 0 1 1 1 1 0 1]
+ [0 1 1 0 0 0 1 0 1 1]
+ [0 0 1 0 1 0 0 0 0 0]
+ [1 1 1 0 0 0 0 1 1 0]
+ [1 1 1 1 1 0 0 0 0 1]]
+
+--- Final (filas 99995-99999) ---
+[[0 1 1 1 1 1 0 0 1 1]
+ [1 0 0 1 0 1 1 1 0 1]
+ [1 0 1 0 0 1 0 0 0 0]
+ [1 1 1 1 1 0 1 0 0 1]
+ [1 1 1 0 0 1 0 1 1 1]]
+
+Verificación completa: la matriz existe físicamente en disco
+y contiene datos válidos en todo su rango (no solo al inicio).

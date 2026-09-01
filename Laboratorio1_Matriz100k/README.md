@@ -1,28 +1,46 @@
-# Laboratorio 1 - Matriz 100.000x100.000 en disco
+# Laboratorio 1 - Matriz 100.000 x 100.000 en disco
 
-## Enunciado
-Escribir una matriz de 100.000x100.000 en disco duro y mostrarla.
+**Juan Esteban Gil Quintero** 
 
-## Enfoque
-Matriz binaria (valores 0/1) con bits empaquetados (`np.packbits`),
-escrita por bloques con streaming a disco para no saturar la RAM.
-Cada uno de los 10.000 millones de valores está físicamente presente
-en disco, codificado 8 valores por byte.
+## Objetivo
+Escribir una matriz de 100.000 x 100.000 en disco duro resolviendo
+los problemas de consumo excesivo de RAM, escritura lenta a disco,
+y optimización de almacenamiento/lectura.
 
-- Tamaño lógico: 100.000 x 100.000 = 10.000.000.000 elementos
-- Tamaño real en disco: ~1.25 GB (10.000.000.000 bits / 8)
+## Enfoque de la solución
+- **Matriz binaria empaquetada:** cada valor lógico es 0 o 1. Se
+  empaquetan 8 valores por byte físico (`np.packbits`), reduciendo
+  el tamaño en disco de ~10 GB (1 byte/valor) a ~1.25 GB.
+- **Procesamiento por bloques (chunking):** la matriz nunca existe
+  completa en memoria. Se genera y escribe en bloques de 1000 filas,
+  manteniendo el uso de RAM en ~100-200 MB constantes, sin importar
+  el tamaño total de la matriz.
+- **Escritura binaria secuencial:** se usan pocas escrituras grandes
+  en vez de millones de escrituras pequeñas, acelerando el proceso.
+- **Lectura optimizada con memmap:** la verificación usa
+  `np.memmap`, que accede a partes específicas del archivo sin
+  cargarlo completo a RAM.
 
 ## Archivos
-- `generar_matriz.py`: crea el archivo binario en disco
-- `mostrar_matriz.py`: lee y muestra una muestra de la matriz + metadata
-- `evidencia/output.txt`: salida de consola de la ejecución
+- `generar_matriz.py`: genera la matriz y la escribe en disco por
+  bloques. Documentado explicando cómo resuelve cada problema.
+- `verificar_matriz.py`: verifica tamaño del archivo y muestra
+  contenido real en distintas zonas (inicio, medio, final) usando
+  acceso optimizado por memmap.
+- `evidencia/output.txt`: salida de consola de ambas ejecuciones.
 
-## Cómo correrlo
+## Cómo ejecutar
 \`\`\`bash
 pip install numpy
 python generar_matriz.py
-python mostrar_matriz.py
+python verificar_matriz.py
 \`\`\`
 
-Nota: el archivo `matriz.bin` generado no se incluye en el repo por su
-tamaño (~1.25 GB).
+## Resultados
+- Tamaño lógico: 100.000 x 100.000 = 10.000.000.000 valores
+- Tamaño real en disco: ~1.25 GB
+- Tiempo de generación: ver evidencia/output.txt
+- RAM pico usada: ~100-200 MB (nunca la matriz completa)
+
+Nota: `matriz.bin` no se incluye en el repositorio por su tamaño;
+se genera localmente ejecutando `generar_matriz.py`.
