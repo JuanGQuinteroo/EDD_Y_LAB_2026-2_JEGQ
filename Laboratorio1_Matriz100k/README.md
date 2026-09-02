@@ -21,6 +21,54 @@ y optimización de almacenamiento/lectura.
   `np.memmap`, que accede a partes específicas del archivo sin
   cargarlo completo a RAM.
 
+  ## Estructura del archivo y acceso eficiente
+
+### Header autodescriptivo
+El archivo `matriz.bin` no es un bloque de bytes sin contexto: comienza
+con un **header de 12 bytes** que contiene:
+- 4 bytes: identificador de formato (`MTX1`)
+- 4 bytes: número de filas (uint32)
+- 4 bytes: número de columnas (uint32)
+
+Esto hace que el archivo sea autodescriptivo — cualquier programa puede
+leer sus dimensiones directamente desde el header, sin depender de
+información externa ni de que el código que lo generó esté disponible.
+
+### Por qué no se usan marcadores de fin de fila
+Se evaluó usar marcadores de fin de fila, pero se descartaron porque
+son útiles solo cuando las filas tienen **tamaño variable** (ej. texto).
+En esta matriz, **todas las filas ocupan exactamente el mismo tamaño**
+(12.500 bytes, ya que 100.000 bits / 8 = 12.500 bytes por fila empaquetada).
+
+Esto permite calcular la posición de cualquier fila con una fórmula
+directa, sin necesidad de escanear el archivo:
+
+posicion_fila(i) = tamano_header + i * bytes_por_fila
+
+Agregar marcadores sería contraproducente: obligaría a leer
+secuencialmente para encontrarlos, exactamente lo que se busca evitar.
+
+### Acceso a una fila (O(1), sin cargar el archivo completo)
+Gracias a la fórmula anterior, leer cualquier fila requiere una sola
+lectura de 12.500 bytes desde disco (usando `np.memmap`), sin importar
+en qué parte del archivo esté ni cuál sea el tamaño total del archivo.
+
+### Acceso a una columna (con trade-off honesto)
+El archivo se almacena "por filas" (row-major), por lo que leer una
+columna completa requiere tocar 1 byte de cada una de las 100.000 filas.
+Aun así, esto **nunca carga el archivo completo a RAM**: solo se traen
+a memoria ~100 KB (un byte por fila), en vez de los 1.25 GB totales.
+
+| Operación         | Bytes leídos a RAM | % del archivo completo |
+|-------------------|--------------------:|------------------------:|
+| Leer 1 fila        | 12.500 bytes (~12 KB) | 0.001% |
+| Leer 1 columna      | 100.000 bytes (~100 KB) | 0.008% |
+| Cargar todo el archivo | 1.250.000.000 bytes (1.25 GB) | 100% |
+
+Esto demuestra que ninguna operación de búsqueda requiere cargar el
+documento completo en memoria, cumpliendo con el objetivo de acceso
+eficiente a datos individuales dentro de una matriz de gran escala.
+
 ## Archivos
 - `generar_matriz.py`: genera la matriz y la escribe en disco por
   bloques. Documentado explicando cómo resuelve cada problema.

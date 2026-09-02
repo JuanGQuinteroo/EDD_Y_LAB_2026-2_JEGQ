@@ -1,3 +1,22 @@
+python -u generar_matriz.py
+
+Progreso: 1000/100000 filas
+Progreso: 11000/100000 filas
+Progreso: 21000/100000 filas
+Progreso: 31000/100000 filas
+Progreso: 41000/100000 filas
+Progreso: 51000/100000 filas
+Progreso: 61000/100000 filas
+Progreso: 71000/100000 filas
+Progreso: 81000/100000 filas
+Progreso: 91000/100000 filas
+
+Listo. Tiempo total: 13.71 segundos
+Tamaño real en disco: 1.25 GB
+RAM pico aproximada usada por bloque: 100.0 MB
+
+python -u verificar_matriz.py
+
 === Verificación de tamaño ===
 Tamaño esperado: 1250000000 bytes (1.25 GB)
 Tamaño real:     1250000000 bytes (1.25 GB)
@@ -5,25 +24,25 @@ Coincide: True
 
 === Muestra de contenido en distintas zonas del archivo ===
 --- Inicio (filas 0-4) ---
-[[1 0 0 0 0 1 1 1 0 0]
- [1 1 0 0 0 1 1 1 0 1]
- [1 0 1 0 1 1 1 0 0 1]
- [0 0 0 0 1 0 1 0 1 1]
- [0 0 0 0 0 0 1 0 1 1]]
+[[1 1 1 1 1 0 0 1 0 1]
+ [1 1 0 1 1 0 0 0 0 0]
+ [0 0 1 0 0 1 0 0 1 1]
+ [0 1 1 0 0 1 0 1 0 1]
+ [1 0 1 0 1 1 0 0 0 1]]
 
 --- Medio (filas 50000-50004) ---
-[[1 1 0 0 1 1 1 1 0 1]
- [0 1 1 0 0 0 1 0 1 1]
- [0 0 1 0 1 0 0 0 0 0]
- [1 1 1 0 0 0 0 1 1 0]
- [1 1 1 1 1 0 0 0 0 1]]
+[[1 0 1 0 1 0 0 0 1 0]
+ [1 0 1 0 0 1 0 0 0 0]
+ [1 0 1 0 1 1 0 1 0 1]
+ [0 0 1 1 1 1 0 1 1 0]
+ [1 1 1 0 1 1 1 1 1 0]]
 
 --- Final (filas 99995-99999) ---
-[[0 1 1 1 1 1 0 0 1 1]
- [1 0 0 1 0 1 1 1 0 1]
- [1 0 1 0 0 1 0 0 0 0]
- [1 1 1 1 1 0 1 0 0 1]
- [1 1 1 0 0 1 0 1 1 1]]
+[[0 1 0 1 0 1 0 0 0 0]
+ [1 1 0 0 1 0 1 0 1 1]
+ [1 0 1 0 0 1 0 0 0 1]
+ [0 1 0 1 1 0 1 1 0 0]
+ [0 0 0 1 0 0 1 1 0 1]]
 
 Verificación completa: la matriz existe físicamente en disco
 y contiene datos válidos en todo su rango (no solo al inicio).
