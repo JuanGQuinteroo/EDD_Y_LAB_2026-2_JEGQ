@@ -1,0 +1,62 @@
+DIAGRAMA DEL ARBOL DE MERKLE - Laboratorio 2
+
+
+Transacciones originales:
+T0 = Juan le paga 10 a Carlos
+T1 = Carlos le paga 5 a David
+T2 = David le paga 20 a Estefania
+T3 = Estefania le paga 15 a Dahiana
+T4 = Dahiana le paga 8 a Juan
+T5 = (duplicado de T4, porque el numero de hojas era impar)
+
+
+NIVEL 3 (RAIZ)
+                              6813176ac2df...
+                                    |
+                    --------------------------------
+                    |                              |
+NIVEL 2         05605d834d94...              3f2ee42252ad...
+                    |                              |
+              ------------                   ------------
+              |          |                   |          |
+NIVEL 1   d05714a9..  94fd49d8..         89b3ed8f..  89b3ed8f..
+              |          |                   |          |
+          --------   --------           --------   --------
+          |      |   |      |           |      |   |      |
+NIVEL 0  h(T0) h(T1) h(T2) h(T3)       h(T4) h(T5) h(T4) h(T5)
+(hojas)   |      |    |     |            |      |   (dup)  (dup)
+          T0     T1   T2    T3           T4     T5
+
+
+Hashes completos de cada nivel:
+
+Nivel 0 (hojas):
+h(T0) = 0c48866fe57a...
+h(T1) = 282b5c4a6e11...
+h(T2) = 36b309498d0e...
+h(T3) = ccc130a7b082...
+h(T4) = ef96ceb26937...
+h(T5) = ef96ceb26937...   <- duplicado de h(T4)
+
+Nivel 1:
+  hash(h(T0)+h(T1)) = d05714a9ddaf...
+  hash(h(T2)+h(T3)) = 94fd49d858d3...
+  hash(h(T4)+h(T5)) = 89b3ed8f3137...
+  (duplicado)        = 89b3ed8f3137...
+
+Nivel 2:
+  hash(Nivel1[0]+Nivel1[1]) = 05605d834d94...
+  hash(Nivel1[2]+Nivel1[3]) = 3f2ee42252ad...
+
+Nivel 3 (RAIZ):
+  hash(Nivel2[0]+Nivel2[1]) = 6813176ac2df015d74b1131839b6ecae132734a0852a950a2f36d2e21ac416f1
+
+
+Notas:
+- T4 y T5 son la misma transaccion (T4 se duplico porque
+  quedaban 5 hojas, numero impar, y hay que emparejar de a 2).
+- Cada nodo de un nivel superior es el hash de la concatenacion
+  de sus dos hijos de abajo.
+- La prueba de inclusion de T2 (transaccion 3) usa los hashes
+  marcados como "hermanos" en el camino hacia la raiz:
+  h(T3) -> Nivel1[0] -> Nivel2[1]
